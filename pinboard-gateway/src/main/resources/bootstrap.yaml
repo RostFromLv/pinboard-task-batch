@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            - users-service:
+                uri: ${USERS_SERVICE_URI:http://localhost:8080}
+            - tasks-service:
+                uri: ${TASKS_SERVICE_URI:http://localhost:8081}

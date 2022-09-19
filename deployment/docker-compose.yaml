@@ -1,0 +1,77 @@
+version: '3.0'
+
+services:
+    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    environment:
+      - STORAGE_TYPE=mem
+    ports:
+      - '9411:9411'
+    networks:
+      - spring-network
+  postgres:
+    container_name: postgres-db
+    image: postgres:13.6
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - spring-network
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+  gateway:
+    container_name: gateway
+    build:
+      context: ../pinboard-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    environment:
+      ZIPKIN_HOST: http://zipkin:9411
+      USERS_SERVICE_URI: http://users-service:8080
+      TASKS_SERVICE_URI: http://tasks-service:8081
+    networks:
+      - spring-network
+    #User-service
+  users-service:
+    container_name: users-service
+    build:
+      context: ../users-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/users
+    depends_on:
+      - postgres
+      - gateway
+    networks:
+      - spring-network
+    ports:
+      - "8080:8080"
+    links:
+      - gateway
+  #Tasks-service
+  tasks-service:
+    container_name: tasks-service
+    build:
+      context: ../task-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    links:
+      - gateway
+    depends_on:
+      - postgres
+      - gateway
+    networks:
+      - spring-network
+    environment:
+      ZIPKIN_HOST: http://zipkin:9411
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tasks
+
+networks:
+  spring-network:
+    driver: bridge

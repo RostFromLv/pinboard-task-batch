@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/pinboard-gateway/pinboard-gateway.iml" filepath="$PROJECT_DIR$/pinboard-gateway/pinboard-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/pinboard-task-batch.iml" filepath="$PROJECT_DIR$/.idea/pinboard-task-batch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/task-service/task-service.iml" filepath="$PROJECT_DIR$/task-service/task-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/users-service/users-service.iml" filepath="$PROJECT_DIR$/users-service/users-service.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,28 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: gateway
+  sleuth:
+    enabled: true
+    sampler:
+      probability: 1.0
+  zipkin:
+    enabled: true
+    base-url: ${ZIPKIN_HOST:http://localhost:9411/}
+    service:
+      name: gateway-service
+    sender:
+      type: web
+  cloud:
+    gateway:
+      routes:
+        - id: usersService
+          uri: ${USERS_SERVICE_URI:https://users-service:8080}
+          predicates:
+            - Path=/api/v1/user/**
+        - id: tasksService
+          uri: ${TASKS_SERVICE_URI:https://tasks-service:8081}
+          predicates:
+            - Path=/api/v1/task/**
